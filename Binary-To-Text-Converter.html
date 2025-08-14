@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binary to Text Converter</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+    .container {
+        max-width: 600px;
+        width: 100%;
+        padding: 20px;
+        background: #f9f9f9;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
+    h1 {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+    textarea {
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        resize: vertical;
+        box-sizing: border-box;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 14px;
+        border: none;
+        border-radius: 6px;
+        margin: 5px;
+        cursor: pointer;
+        background: #007bff;
+        color: white;
+    }
+    button.clear {
+        background: #dc3545;
+    }
+    .output {
+        margin-top: 15px;
+        font-size: 16px;
+        padding: 10px;
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        word-break: break-word;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Binary to Text Converter</h1>
+    <label for="binaryInput">Enter binary code (spaces required between each 8-bit chunk):</label>
+    <textarea id="binaryInput" placeholder="e.g. 01001000 01101001"></textarea>
+    <div>
+        <button onclick="convert()">Convert</button>
+        <button class="clear" onclick="clearInput()">Clear</button>
+    </div>
+    <div id="output" class="output">Output:</div>
+</div>
+
+<script>
+function binaryToText(binaryInput) {
+    binaryInput = binaryInput.trim();
+    if (!binaryInput) {
+        return "Error: No binary input provided.";
+    }
+
+    let chunks = binaryInput.replace(/\r?\n|\r/g, " ").split(/\s+/);
+
+    let fixedChunks = [];
+    for (let chunk of chunks) {
+        if (/[^01]/.test(chunk)) {
+            return `Error: Invalid binary characters in '${chunk}'. Only 0s and 1s allowed.`;
+        }
+        if (chunk.length !== 8) {
+            return `Error: '${chunk}' must be exactly 8 bits.`;
+        }
+        fixedChunks.push(chunk);
+    }
+
+    try {
+        return fixedChunks.map(b => String.fromCharCode(parseInt(b, 2))).join('');
+    } catch (e) {
+        return "Error during conversion: " + e.message;
+    }
+}
+
+function convert() {
+    const input = document.getElementById('binaryInput').value;
+    const result = binaryToText(input);
+    document.getElementById('output').textContent = "Output: " + result;
+}
+
+function clearInput() {
+    document.getElementById('binaryInput').value = "";
+    document.getElementById('output').textContent = "Output:";
+}
+</script>
+
+</body>
+</html>
